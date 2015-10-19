@@ -1,0 +1,56 @@
+{
+  "name": "copy-styles",
+  "version": "1.0.0",
+  "description": "Copies computed styles from source to target",
+  "main": "lib/index.js",
+  "files": [
+    "dist/",
+    "src/",
+    "lib"
+  ],
+  "scripts": {
+    "compile": "babel src -d lib",
+    "roll": "rollup ./src/index.js -o .tmp/bundle.js",
+    "bundle": "browserify .tmp/bundle.js -t babelify -o dist/bundle.js",
+    "build": "npm run compile && npm run roll && npm run bundle && npm run jsdoc2md",
+    "lint": "eslint src test",
+    "check": "npm run lint -s && dependency-check package.json --entry src",
+    "watch": "watch 'npm run build' src test",
+    "test": "babel-node test/jsdom-index.js | tspec",
+    "jsdoc2md": "jsdoc-parse ./src/index.js | dmd > API.md",
+    "zuul": "zuul --local 9966 --ui tape -- test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hypercubed/copy-styles.git"
+  },
+  "keywords": [
+    "browser",
+    "css",
+    "getComputedStyles"
+  ],
+  "author": "J. Harshbarger <hypercubed@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Hypercubed/copy-styles/issues"
+  },
+  "homepage": "https://github.com/Hypercubed/copy-styles#readme",
+  "devDependencies": {
+    "babel": "*",
+    "babel-eslint": "*",
+    "babelify": "^6.3.0",
+    "dependency-check": "*",
+    "dmd": "^1.2.0",
+    "eslint": "*",
+    "jsdoc-parse": "^1.1.1",
+    "jsdom": "^3.1.2",
+    "rollup": "^0.19.1",
+    "tap-spec": "*",
+    "tape": "*",
+    "watch": "*",
+    "zuul": "^3.6.0"
+  },
+  "dependencies": {
+    "computed-styles": "^1.0.3"
+  }
+}
