@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Copies computed styles from source to target",
   "main": "lib/index.js",
+  "jsnext:main":  "src/index.js",
   "files": [
     "dist/",
     "src/",
