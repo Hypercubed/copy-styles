@@ -2,9 +2,12 @@ CHANGELOG
 =========
 
 ## HEAD (Unreleased)
-* Removed parent style check, not needed here
+_(none)_
 
 --------------------
+
+## 1.1.1 (2015-10-20)
+* Removed parent style check, not needed here
 
 ## 1.1.0 (2015-10-19)
 * Include a list of inheritable styles
