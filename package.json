@@ -1,6 +1,6 @@
 {
   "name": "copy-styles",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Copies computed styles from source to target",
   "main": "lib/index.js",
   "jsnext:main": "src/index.js",
