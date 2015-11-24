@@ -14,12 +14,13 @@
     "roll": "rollup ./src/index.js -o .tmp/bundle.js",
     "bundle": "browserify .tmp/bundle.js -t babelify -o dist/bundle.js",
     "build": "npm run compile && npm run roll && npm run bundle && npm run jsdoc2md",
-    "lint": "eslint src test",
+    "lint": "semistandard",
     "check": "npm run lint -s && dependency-check package.json --entry src",
     "watch": "watch 'npm run build' src test",
-    "test": "babel-node test/jsdom-index.js | tspec",
+    "test": "npm run zuul:phantom",
     "jsdoc2md": "jsdoc-parse ./src/index.js | dmd > API.md",
-    "zuul": "zuul --local 9966 --ui tape -- test/index.js"
+    "zuul:server": "zuul --local 9966 --ui tape -- test/index.js",
+    "zuul:phantom": "zuul --phantom --ui tape -- test/index.js | tap-spec"
   },
   "repository": {
     "type": "git",
@@ -39,7 +40,6 @@
   "homepage": "https://github.com/Hypercubed/copy-styles#readme",
   "devDependencies": {
     "babel": "*",
-    "babel-eslint": "*",
     "babelify": "^6.3.0",
     "dependency-check": "*",
     "dmd": "^1.2.0",
@@ -47,12 +47,19 @@
     "jsdoc-parse": "^1.1.1",
     "jsdom": "^3.1.2",
     "rollup": "^0.19.1",
+    "semistandard": "^7.0.3",
     "tap-spec": "*",
     "tape": "*",
     "watch": "*",
     "zuul": "^3.6.0"
   },
   "dependencies": {
-    "computed-styles": "^1.0.3"
+    "computed-styles": "^1.1.2"
+  },
+  "semistandard": {
+    "ignore": [
+      "lib",
+      "dist"
+    ]
   }
 }

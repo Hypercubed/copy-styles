@@ -7,83 +7,91 @@ Object.defineProperty(exports, '__esModule', {
 var isDefined = function isDefined(a) {
   return typeof a !== 'undefined';
 };
+var isUndefined = function isUndefined(a) {
+  return typeof a === 'undefined';
+};
+var isObject = function isObject(a) {
+  return a !== null && typeof a === 'object';
+};
 
 // from https://github.com/npm-dom/is-dom/blob/master/index.js
 function isNode(val) {
-  if (!val || typeof val !== 'object') return false;
-  if (window && 'object' == typeof window.Node) return val instanceof window.Node;
-  return 'number' == typeof val.nodeType && 'string' == typeof val.nodeName;
+  if (!isObject(val)) return false;
+  if (isDefined(window) && isObject(window.Node)) return val instanceof window.Node;
+  return typeof val.nodeType === 'number' && typeof val.nodeName === 'string';
 }
 
-// Convert computed styles to something we can iterate over
-// adapted from http://stackoverflow.com/questions/754607/can-jquery-get-all-css-styles-associated-with-an-element/6416527#6416527
-function convertComputedStyles(computed) {
-  var styles = {};
-  for (var i = 0, l = computed.length; i < l; i++) {
-    var prop = computed[i];
-    styles[prop] = computed.getPropertyValue(prop);
+var useComputedStyles = isDefined(window) && isDefined(window.getComputedStyle);
+
+// Gets computed styles for an element
+// from https://github.com/jquery/jquery/blob/master/src/css/var/getStyles.js
+function getComputedStyles(node) {
+  if (useComputedStyles) {
+    var view = node.ownerDocument.defaultView;
+    if (!view.opener) view = window;
+    return view.getComputedStyle(node, null);
+  } else {
+    return node.currentStyle || node.style;
   }
-  return styles;
 }
 
 /**
 * Returns a collection of CSS property-value pairs
-* @param  {element} node A DOM element
+* @param  {Element} node A DOM element to copy styles from
+* @param  {Object} [target] An optional object to copy styles to
+* @param {(Object|Boolean)} [default=true] A collection of CSS property-value pairs, false: copy none, true: copy all
 * @return {object} collection of CSS property-value pairs
 * @api public
 */
 function computedStyles(node) {
+  var target = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+  var styleList = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+
   if (!isNode(node)) {
     throw new Error('parameter 1 is not of type \'Element\'');
   }
-  // adapted from https://github.com/angular/angular.js/issues/2866#issuecomment-31012434
-  if (isDefined(node.currentStyle)) {
-    //for old IE
-    return node.currentStyle;
-  } else if (isDefined(window.getComputedStyle)) {
-    //for modern browsers
-    return convertComputedStyles(node.ownerDocument.defaultView.getComputedStyle(node, null));
+
+  if (styleList === false) return target;
+
+  var computed = getComputedStyles(node);
+
+  var keysArray;
+  if (styleList === true) {
+    keysArray = useComputedStyles ? computed : Object.keys(computed);
+  } else {
+    keysArray = Object.keys(styleList);
   }
-  return node.style;
+
+  for (var i = 0, l = keysArray.length; i < l; i++) {
+    var key = keysArray[i];
+
+    var def = styleList === true || styleList[key];
+    if (def === false || isUndefined(def)) continue; // copy never
+
+    var value = /* computed.getPropertyValue(key) || */computed[key]; // using getPropertyValue causes error in IE11
+    if (typeof value !== 'string' || value === '') continue; // invalid value
+
+    if (def === true || value !== def) {
+      // styleList === true || styleList[key] === true || styleList[key] !== value
+      target[key] = value;
+    }
+  }
+
+  return target;
 }
 
-// Copies computed styles from source to target
+// Copies computed styles from source Element to target Element as inline styles.
 /**
 * Copies computed styles from source to target
-* @param  {element} source A DOM element to copy styles from
-* @param  {element} target A DOM element to copy styles to
-* @param {(object|boolean)} [defaultStyles=true] collection of CSS property-value pairs, false: copy none, true: copy all
+* @param  {Element} source A DOM element to copy styles from
+* @param  {Element} target A DOM element to copy styles to
+* @param {(Object|Boolean)} [default=true] collection of CSS property-value pairs, false: copy none, true: copy all
 * @api public
 */
 function copyStyles(source, target) {
-  var defaultStyles = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+  var styles = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
 
-  if (defaultStyles === false) {
-    return;
-  }
-
-  var srcStyles = computedStyles(source);
-
-  if (defaultStyles === true) {
-    // copy all styles
-    for (var key in srcStyles) {
-      target.style[key] = srcStyles[key];
-    }
-    return;
-  }
-
-  for (var key in defaultStyles) {
-
-    var def = defaultStyles[key];
-    if (def === false) continue; // copy never
-
-    var src = srcStyles[key];
-    if (typeof src !== "string") continue; // invalid
-
-    if (defaultStyles[key] === true || src !== def) {
-      target.style[key] = src;
-    }
-  }
+  computedStyles(source, target.style, styles);
 }
 
 exports['default'] = copyStyles;

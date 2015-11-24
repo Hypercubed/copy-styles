@@ -1,5 +1,5 @@
 <a name="copyStyles"></a>
-## copyStyles(source, target, [defaultStyles])
+## copyStyles(source, target, [default])
 Copies computed styles from source to target
 
 **Kind**: global function  
@@ -7,7 +7,7 @@ Copies computed styles from source to target
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| source | <code>element</code> |  | A DOM element to copy styles from |
-| target | <code>element</code> |  | A DOM element to copy styles to |
-| [defaultStyles] | <code>object</code> &#124; <code>boolean</code> | <code>true</code> | collection of CSS property-value pairs, false: copy none, true: copy all |
+| source | <code>Element</code> |  | A DOM element to copy styles from |
+| target | <code>Element</code> |  | A DOM element to copy styles to |
+| [default] | <code>Object</code> &#124; <code>Boolean</code> | <code>true</code> | collection of CSS property-value pairs, false: copy none, true: copy all |
 
