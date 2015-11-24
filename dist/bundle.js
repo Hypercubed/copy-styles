@@ -18,7 +18,7 @@ var isObject = function isObject(a) {
 function isNode(val) {
   if (!isObject(val)) return false;
   if (isDefined(window) && isObject(window.Node)) return val instanceof window.Node;
-  return typeof val.nodeType === 'number' && typeof val.nodeName === 'string';
+  return 'number' == typeof val.nodeType && 'string' == typeof val.nodeName;
 }
 
 var useComputedStyles = isDefined(window) && isDefined(window.getComputedStyle);
@@ -55,11 +55,10 @@ function computedStyles(node) {
 
   var computed = getComputedStyles(node);
 
-  var keysArray;
   if (styleList === true) {
-    keysArray = useComputedStyles ? computed : Object.keys(computed);
+    var keysArray = useComputedStyles ? computed : Object.keys(computed);
   } else {
-    keysArray = Object.keys(styleList);
+    var keysArray = Object.keys(styleList);
   }
 
   for (var i = 0, l = keysArray.length; i < l; i++) {

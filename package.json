@@ -39,11 +39,11 @@
   },
   "homepage": "https://github.com/Hypercubed/copy-styles#readme",
   "devDependencies": {
-    "babel": "*",
+    "babel": "^5.0.13",
     "babelify": "^6.3.0",
+    "browserify": "^12.0.1",
     "dependency-check": "*",
     "dmd": "^1.2.0",
-    "eslint": "*",
     "jsdoc-parse": "^1.1.1",
     "jsdom": "^3.1.2",
     "rollup": "^0.19.1",

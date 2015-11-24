@@ -28,7 +28,7 @@ copyStyles(source, target);
 An optional third parameter can be passed to `copyStyles`.  If true all computed styles are copied.  If false no styles are copied (function has no effect).  If the third parameter is an object only those keys with a truthy value are copied. If a value is false or equal to the value of the that property it will not be copied.  For example:
 
 ```js
-copyStyles(source, target,{
+copyStyles(source, target, {
 	'color': true,
 	'font-family': false,
 	'margin-left': '0px'
